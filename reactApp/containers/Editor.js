@@ -1,23 +1,29 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var { TextEditor } = require('../components/TextEditor');
+var { Editor, EditorState, RichUtils } = require('draft-js');
+var { Dropdown, Button, NavItem } = require('react-materialize');
 
-class Editor extends React.Component {
+
+class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      boldText: {},
+      editorState: EditorState.createEmpty(),
       centerText: {}
     }
+    this.onChange = (editorState) => this.setState({editorState});
   }
 
   _boldText(e) {
-    console.log('here!');
-    this.setState({
-      boldText: {
-        fontWeight: 'bold'
-      }
-    })
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
+  }
+
+  _italicizeText(e) {
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
+  }
+
+  _underlineText(e) {
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
   }
 
   _centerText(e) {
@@ -28,30 +34,41 @@ class Editor extends React.Component {
     return (
       <div>
         <p>Sample Document</p>
-        <button>
+        <Button>
           Save
-        </button>
+        </Button>
         <div>
-          <button onClick={() => this._boldText()}>
+          <Button onClick={() => this._boldText()}>
             Bold
-          </button>
-          <button>
+          </Button>
+          <Button onClick={() => this._italicizeText()}>
             Italics
-          </button>
-          <button>
+          </Button>
+          <Button onClick={() => this._underlineText()}>
             Underline
-          </button>
-          <button>
+          </Button>
+          <Button>
             Align Left
-          </button>
-          <button onClick={() => this._centerText()}>
+          </Button>
+          <Button onClick={() => this._centerText()}>
             Center
-          </button>
-          <button>
+          </Button>
+          <Button>
             Align Right
-          </button>
+          </Button>
+          <Dropdown trigger={
+          		<Button>Drop me!</Button>
+          	}>
+          	<NavItem>one</NavItem>
+          	<NavItem>two</NavItem>
+          	<NavItem divider />
+          	<NavItem>three</NavItem>
+          </Dropdown>
           <div>
-            <TextEditor />
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+            />
           </div>
         </div>
       </div>
@@ -62,5 +79,5 @@ class Editor extends React.Component {
 
 
 module.exports = {
-  Editor
+  TextEditor
 }
