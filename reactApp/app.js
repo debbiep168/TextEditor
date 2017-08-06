@@ -1,6 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var { TextEditor } = require('./containers/Editor');
+var { HashRouter, Route, IndexRoute, BrowserRouter, Link, Switch } = require('react-router-dom');
+var { LoginPage } = require('./components/LoginPage');
+var { Register } = require('./components/Register');
+var { Documents } = require('./components/Documents');
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -8,5 +11,16 @@ var { TextEditor } = require('./containers/Editor');
 // .then(text => console.log(text))
 // .catch(err => {throw err})
 
-ReactDOM.render(<TextEditor />,
+//DEFAULT HOME IS LOGIN PAGE SINCE '/' ROUTE
+const router = (
+  <HashRouter>
+    <div>
+      <Route path='/' exact component={LoginPage} />
+      <Route path='/register' exact component={Register} />
+      <Route path='/documents' exact component={Documents} />
+    </div>
+  </HashRouter>
+)
+
+ReactDOM.render(router,
    document.getElementById('root'));
