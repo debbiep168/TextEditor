@@ -1,9 +1,10 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var { HashRouter, Route, IndexRoute, BrowserRouter, Link, Switch } = require('react-router-dom');
-var { LoginPage } = require('./components/LoginPage');
-var { Register } = require('./components/Register');
-var { Documents } = require('./components/Documents');
+var LoginPage = require('./components/LoginPage');
+var Register = require('./components/Register');
+var DocumentsList = require('./components/DocumentsList');
+var DocumentView = require('./components/DocumentView');
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -17,7 +18,8 @@ const router = (
     <div>
       <Route path='/' exact component={LoginPage} />
       <Route path='/register' exact component={Register} />
-      <Route path='/documents' exact component={Documents} />
+      <Route path='/documents' exact component={DocumentsList} />
+      <Route path='/editor/:id' exact component={DocumentView} />
     </div>
   </HashRouter>
 )

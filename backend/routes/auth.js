@@ -1,30 +1,37 @@
 const express = require('express');
+var session = require('express-session');
+const router = express.Router();
 const bodyParser = require('body-parser');
-const route = express.Router();
-const models = require('../models/models');
-const User = models.User;
+const { User } = require('../models/models');
+var passport = require('passport');
 
+module.exports = function(passport) {
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login' 
-}));
+  router.get('/', function(req, res) {
+    res.send('testing');
+  })
 
-route.post('/register', function(req, res) {
-  var newUser = new User({
-    username: req.body.username,
-    password: req.body.password,
-    documents: []
+  router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.json({ success: true, user: req.user });
   });
-  newUser.save()
-    .then((err, newUser) => {
-      res.json({success: true});
+
+  router.post('/register', function(req, res) {
+    var newUser = new User({
+      username: req.body.username,
+      password: req.body.password,
+      documents: []
     });
-});
+    newUser.save()
+    .then((usr) => {
+      res.json({user: usr});
+    })
+  });
+
+  router.get('/logout', function(req, res) {
+    req.logout();
+    res.json({success: true});
+  });
 
 
-
-
-
-
-module.exports = route;
+  return router;
+};

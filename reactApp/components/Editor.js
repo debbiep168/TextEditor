@@ -5,7 +5,8 @@ var { Editor,
   RichUtils,
   Immutable,
   Draft,
-  Modifier
+  Modifier,
+  convertToRaw
 } = require('draft-js');
 const {
   extendedBlockRenderMap,
@@ -100,8 +101,9 @@ class TextEditor extends React.Component {
     let counter = 0;
     return (
       <div>
-        <p>Document</p>
-        <button className="waves-effect waves-light btn">
+        <p><b>{this.props.title}</b></p>
+        <button className="waves-effect waves-light btn"
+          onClick={(event) => this.props.saveDocument(event, convertToRaw(this.state.editorState.getCurrentContent()))}>
           Save
         </button>
         <div>
@@ -167,6 +169,4 @@ const styles = {
 
 
 
-module.exports = {
-  TextEditor
-}
+module.exports = TextEditor;
