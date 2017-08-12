@@ -5,7 +5,7 @@ var LoginPage = require('./components/LoginPage');
 var Register = require('./components/Register');
 var DocumentsList = require('./components/DocumentsList');
 var DocumentView = require('./components/DocumentView');
-
+var styles = require('./stylesheets/main.css');
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
 // .then(resp => resp.text())

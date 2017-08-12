@@ -61,7 +61,7 @@ class LoginPage extends React.Component {
 
   render() {
     return(
-      <div className="row">
+      <div className="row login-page">
         <p>Login</p>
         <form className="col s12">
           <div className="row">

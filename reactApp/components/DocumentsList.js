@@ -45,10 +45,26 @@ class DocumentsList extends React.Component {
       })
   }
 
+  logout(event) {
+    event.preventDefault();
+    this.props.history.push('/');
+    axios.get('http://localhost:3000/logout')
+      .then((response) => {
+        console.log('response', response);
+        if (response.data.success) {
+          // this.props.history.push('/');
+          console.log('logged out');
+        }
+      })
+  }
+
   render() {
     return (
       <div>
       Documents
+      <button className="waves-effect waves-light btn" onClick={(event) => this.logout(event)}>
+        Logout
+      </button>
       <div className="row">
         <form>
           <div className="input-field col s6">

@@ -6,7 +6,9 @@ var { Editor,
   Immutable,
   Draft,
   Modifier,
-  convertToRaw
+  convertToRaw,
+  convertFromRaw,
+  ContentState
 } = require('draft-js');
 const {
   extendedBlockRenderMap,
@@ -15,6 +17,7 @@ const {
   styleMap,
   fontStyles
 } = require('./editorStyling');
+var axios = require('axios');
 
 class TextEditor extends React.Component {
   constructor(props) {
@@ -24,6 +27,18 @@ class TextEditor extends React.Component {
     }
     this._fontStyle = this._fontStyle.bind(this);
     this.onChange = (editorState) => this.setState({editorState});
+  }
+
+  componentDidMount() {
+    var self = this;
+    axios.get('http://localhost:3000/document/' + this.props.documentId)
+    .then(function (response) {
+      const parsed = EditorState.createWithContent(convertFromRaw(JSON.parse(response.data.document.text)));
+      self.onChange(parsed);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   _boldText(e) {
@@ -56,6 +71,10 @@ class TextEditor extends React.Component {
 
   _bulletedList(e) {
     this.onChange(RichUtils.toggleBlockType(this.state.editorState, 'unordered-list-item'));
+  }
+
+  _orderedList(e) {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, 'ordered-list-item'));
   }
 
   _toCode(e) {
@@ -103,47 +122,47 @@ class TextEditor extends React.Component {
       <div>
         <p><b>{this.props.title}</b></p>
         <button className="waves-effect waves-light btn"
-          onClick={(event) => this.props.saveDocument(event, convertToRaw(this.state.editorState.getCurrentContent()))}>
+          onClick={() => this.props.saveDocument(convertToRaw(this.state.editorState.getCurrentContent()))}>
           Save
         </button>
         <div>
-          <select className={"browser-default"} id="fontSize" onChange={() => this._fontStyle("fontSize", fontSizes)}>
+          <select className={"browser-default toolbar-item"} id="fontSize" onChange={() => this._fontStyle("fontSize", fontSizes)}>
               {fontSizes.map(size => <option key={counter++} value={size}> {size} </option>)}
           </select>
-          <select className={"browser-default"} id="fontColor" onChange={() => this._fontStyle("fontColor", colors)}>
+          <select className={"browser-default toolbar-item"} id="fontColor" onChange={() => this._fontStyle("fontColor", colors)}>
               {colors.map(color => <option key={counter++} value={color}> {color} </option>)}
           </select>
-          <select className={"browser-default"} id="fontStyle" onChange={() => this._fontStyle("fontStyle", fontStyles)}>
+          <select className={"browser-default toolbar-item"} id="fontStyle" onChange={() => this._fontStyle("fontStyle", fontStyles)}>
               {fontStyles.map(style => <option key={counter++} value={style}> {style} </option>)}
           </select>
-          <button className="waves-effect waves-light btn" onClick={() => this._toCode()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._toCode()}>
              <i className="material-icons">code</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._boldText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._boldText()}>
              <i className="material-icons">format_bold</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._italicizeText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._italicizeText()}>
              <i className="material-icons">format_italic</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._underlineText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._underlineText()}>
             <i className="material-icons">format_underline</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._alignLeftText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._alignLeftText()}>
             <i className="material-icons">format_align_left</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._centerText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._centerText()}>
             <i className="material-icons">format_align_center</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._alignRightText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._alignRightText()}>
             <i className="material-icons">format_align_right</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._strikeThroughText()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._strikeThroughText()}>
             <i className="material-icons">strikethrough_s</i>
           </button>
-          <button className="waves-effect waves-light btn" onClick={() => this._bulletedList()}>
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._bulletedList()}>
             <i className="material-icons">format_list_bulleted</i>
           </button>
-          <button className="waves-effect waves-light btn">
+          <button className="waves-effect waves-light btn toolbar-item" onClick={() => this._orderedList()}>
             <i className="material-icons">format_list_numbered</i>
           </button>
           <div style={styles.editor}>

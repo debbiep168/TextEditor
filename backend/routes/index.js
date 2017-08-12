@@ -38,9 +38,8 @@ module.exports = function(passport) {
   });
 
   router.post('/savedocument', function (req, res) {
-    var textInput = req.body.text;
+    var textInput = JSON.stringify(req.body.text);
     var docId = req.body.docId;
-    console.log('hhihihi', textInput, docId);
     Document.findOne({_id: docId})
       .then((doc) => {
         doc.text = textInput;

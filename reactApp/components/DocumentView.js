@@ -7,8 +7,8 @@ class DocumentView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      text: ''
+      title: 'Loading...',
+      text: 'Loading...'
     }
   }
 
@@ -16,10 +16,9 @@ class DocumentView extends React.Component {
     var self = this;
     axios.get('http://localhost:3000/document/' + this.props.match.params.id)
     .then(function (response) {
-      console.log('docs', response);
+      console.log('RESPONSE', response);
       self.setState({
-        title: response.data.document.title,
-        text: response.data.document.text
+        title: response.data.document.title
       });
     })
     .catch(function (error) {
@@ -27,17 +26,23 @@ class DocumentView extends React.Component {
     });
   }
 
-  saveDocument(event, input) {
-    event.preventDefault();
+  saveDocument(input) {
+    //event.preventDefault();
     console.log(input)
-    this.setState({text: input.blocks["0"].text});
+    //this.setState({text: input.blocks["0"].text});
     axios.post('http://localhost:3000/savedocument', {
       title: this.state.title,
-      text: input.blocks["0"].text,
+      text: input,
       docId: this.props.match.params.id
     })
     .then(() => {
-      alert('Document was successfully saved!');
+      // alert.info("document has been saved!", {
+      //       position: 'top',
+      //       effect: 'flip',
+      //       timeout: 10000,
+      //       offset: 100
+      //     })
+      alert('Saved Document!');
     })
     .catch((error) => {
       console.log(error);
@@ -50,9 +55,15 @@ class DocumentView extends React.Component {
         <button className="waves-effect waves-light btn" onClick={() => this.props.history.push('/documents')}>
           Go Back
         </button>
+        <input placeholder="User Id" id="doctitle" type="text" className="validate" value={this.state.value} onChange={(event) => this.setState({title: event.target.value})}></input>
+        <button className="waves-effect waves-light btn">
+          Add Collaborator
+        </button>
         <TextEditor
           title={this.state.title}
           saveDocument={this.saveDocument.bind(this)}
+          documentId={this.props.match.params.id}
+          editorState={this.state.text}
         />
       </div>
     )
